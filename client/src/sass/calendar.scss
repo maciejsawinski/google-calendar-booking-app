@@ -1,0 +1,38 @@
+.carousel {
+  margin-top: 5rem;
+  text-align: center;
+
+  .carousel-control {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+
+  .column-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .column {
+      margin: 0 1rem;
+
+      button {
+        width: 5rem;
+      }
+
+      .column-title-button {
+        cursor: default;
+
+        &:focus {
+          box-shadow: none;
+        }
+
+        .column-title-text {
+          padding: 0;
+          margin: 0;
+          font-size: small;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
