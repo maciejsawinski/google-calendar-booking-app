@@ -5,12 +5,16 @@ import helmet from "helmet";
 import xss from "xss-clean";
 import hpp from "hpp";
 import compression from "compression";
-// import cors from "cors";
+import cors from "cors";
 
 import AppErrorHandler from "./utils/appErrorHandler.js";
 import globalErrorHandler from "./controllers/errorController.js";
 
+import eventRouter from "./routes/eventRoutes.js";
+
 const app = express();
+
+app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use(compression());
 
@@ -47,9 +51,7 @@ app.use((req, res, next) => {
 });
 
 // routes
-app.get("/api/v1/", (req, res) => {
-  res.json("OK");
-});
+app.use("/api/v1/events", eventRouter);
 
 // error handlers
 app.all("*", (req, res, next) => {

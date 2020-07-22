@@ -1,22 +1,114 @@
-import React, { useState, useEffect } from "react";
-
-import ModalForm from "./ModalForm";
+import React, { useState } from "react";
+import axios from "axios";
+import moment from "moment";
+import "moment/locale/pl";
 
 import Spinner from "react-bootstrap/Spinner";
 import Carousel from "react-bootstrap/Carousel";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-function Calendar() {
-  const [loading, setLoading] = useState(true);
-  const [index, setIndex] = useState(0);
-  const [modalShow, setModalShow] = React.useState(false);
+import useMountEffect from "./hooks/useMountEffect";
 
-  useEffect(() => {
-    setTimeout(() => {
+import ModalForm from "./ModalForm";
+
+moment.locale("pl");
+
+const Calendar = () => {
+  const [loading, setLoading] = useState(false);
+
+  const [index, setIndex] = useState(0);
+  const [tables, setTables] = useState([]);
+
+  const [modalShow, setModalShow] = useState(false);
+  const [modalDate, setModalDate] = useState(moment());
+
+  useMountEffect(() => {
+    (async () => {
+      await fetchData();
+      console.log("(⌐▨_▨)");
+    })().catch((err) => {
+      console.log(err);
       setLoading(false);
-    }, 1500);
+    });
   });
+
+  const fetchData = async () => {
+    setLoading(true);
+    const res = await axios.get("http://localhost:8080/api/v1/events");
+    createTables(res.data.data);
+    setLoading(false);
+  };
+
+  const createTables = (calendarEvents) => {
+    const tables = calendarEvents.map((event) => {
+      const buttons = event
+        .map(({ time, isBooked }) => {
+          time = moment(time);
+
+          let displayTime;
+          if (["sob", "ndz"].includes(time.format("ddd"))) {
+            isBooked = true;
+            displayTime = "-";
+          } else {
+            displayTime = time.format("HH:mm");
+          }
+
+          const buttonConfig = {
+            key: time,
+            variant: isBooked ? "outline-primary" : "primary",
+            onClick: isBooked ? undefined : () => openModal(time),
+            disabled: isBooked,
+          };
+
+          return (
+            <Button {...buttonConfig}>
+              {isBooked && displayTime !== "-" ? (
+                <del>{displayTime}</del>
+              ) : (
+                displayTime
+              )}
+            </Button>
+          );
+        })
+        .reduce((prev, curr) => [prev, "", curr]);
+
+      const table = (
+        <ButtonGroup
+          key={moment(event[0].time).format("D MMM")}
+          vertical
+          className="column"
+        >
+          <Button
+            className="column-title-button"
+            variant="outline-primary"
+            disabled
+          >
+            <p className="column-title-text">
+              {moment(event[0].time).format("ddd")},
+            </p>
+            <p className="column-title-text">
+              {moment(event[0].time).format("D MMM")}
+            </p>
+          </Button>
+          {buttons}
+        </ButtonGroup>
+      );
+
+      return table;
+    });
+
+    setTables(
+      new Array(Math.ceil(tables.length / 5))
+        .fill()
+        .map((_) => tables.splice(0, 5))
+    );
+  };
+
+  const openModal = (date) => {
+    setModalDate(date);
+    setModalShow(true);
+  };
 
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
@@ -32,197 +124,37 @@ function Calendar() {
     nextIcon: <span className="carousel-control text-dark">&gt;</span>,
   };
 
-  const reactTable = (
-    <div className="column-group">
-      <ButtonGroup vertical className="column">
-        <Button
-          className="column-title-button"
-          variant="outline-primary"
-          disabled
-        >
-          <p className="column-title-text">Pon,</p>
-          <p className="column-title-text">13 Lip</p>
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          8:00
-        </Button>
-        <Button variant="outline-primary" disabled>
-          <del>9:00</del>
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          10:00
-        </Button>
-        <Button variant="outline-primary" disabled>
-          <del>11:00</del>
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          12:00
-        </Button>
-        <Button variant="outline-primary" disabled>
-          <del>13:00</del>
-        </Button>
-        <Button variant="outline-primary" disabled>
-          <del>14:00</del>
-        </Button>
-        <Button variant="outline-primary" disabled>
-          <del>15:00</del>
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup vertical className="column">
-        <Button
-          className="column-title-button"
-          variant="outline-primary"
-          disabled
-        >
-          <p className="column-title-text">Pon,</p>
-          <p className="column-title-text">13 Lip</p>
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          8:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          9:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          10:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          11:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          12:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          13:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          14:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          15:00
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup vertical className="column">
-        <Button
-          className="column-title-button"
-          variant="outline-primary"
-          disabled
-        >
-          <p className="column-title-text">Pon,</p>
-          <p className="column-title-text">13 Lip</p>
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-        <Button variant="outline-primary" disabled>
-          -
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup vertical className="column">
-        <Button
-          className="column-title-button"
-          variant="outline-primary"
-          disabled
-        >
-          <p className="column-title-text">Pon,</p>
-          <p className="column-title-text">13 Lip</p>
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          8:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          9:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          10:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          11:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          12:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          13:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          14:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          15:00
-        </Button>
-      </ButtonGroup>
-      <ButtonGroup vertical className="column">
-        <Button
-          className="column-title-button"
-          variant="outline-primary"
-          disabled
-        >
-          <p className="column-title-text">Pon,</p>
-          <p className="column-title-text">13 Lip</p>
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          8:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          9:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          10:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          11:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          12:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          13:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          14:00
-        </Button>
-        <Button variant="primary" onClick={() => setModalShow(true)}>
-          15:00
-        </Button>
-      </ButtonGroup>
-    </div>
-  );
-
-  const content = (
-    <>
-      <Carousel {...carouselConfig}>
-        <Carousel.Item>{reactTable}</Carousel.Item>
-        <Carousel.Item>{reactTable}</Carousel.Item>
-        <Carousel.Item>{reactTable}</Carousel.Item>
-      </Carousel>
-      <ModalForm show={modalShow} onHide={() => setModalShow(false)} />
-    </>
+  const carouselContent = (
+    <Carousel {...carouselConfig}>
+      <Carousel.Item>
+        <div className="column-group">{tables[0]}</div>
+      </Carousel.Item>
+      <Carousel.Item>
+        <div className="column-group">{tables[1]}</div>
+      </Carousel.Item>
+      <Carousel.Item>
+        <div className="column-group">{tables[2]}</div>
+      </Carousel.Item>
+    </Carousel>
   );
 
   return (
-    <div className="carousel">
-      {loading ? <Spinner animation="grow" variant="primary" /> : content}
-    </div>
+    <>
+      <div className="carousel">
+        {loading ? (
+          <Spinner animation="grow" variant="primary" />
+        ) : (
+          carouselContent
+        )}
+      </div>
+      <ModalForm
+        show={modalShow}
+        date={modalDate}
+        onHide={() => setModalShow(false)}
+        fetchData={() => fetchData()}
+      />
+    </>
   );
-}
+};
 
 export default Calendar;
