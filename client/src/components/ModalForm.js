@@ -84,7 +84,7 @@ const ModalForm = ({ show, date, onHide, fetchData }) => {
               verticalAlign="middle"
             />
             <br />
-            <h3>
+            <h3 className="modal-success-text">
               Zarezerwowano wizytę. Potwierdzenie wysłano na adres
               <br />
               {email}

@@ -1,18 +1,18 @@
 @font-face {
-  font-family: "Comfortaa";
+  font-family: "Fira Mono";
   font-style: normal;
   font-weight: 400;
-  src: url("../fonts/comfortaa-v29-latin-ext_latin-regular.eot");
-  src: local(""),
-    url("../fonts/comfortaa-v29-latin-ext_latin-regular.eot?#iefix")
+  src: url("../fonts/fira-mono-v8-latin-ext_latin-regular.eot");
+  src: local("Fira Mono Regular"), local("FiraMono-Regular"),
+    url("../fonts/fira-mono-v8-latin-ext_latin-regular.eot?#iefix")
       format("embedded-opentype"),
-    url("../fonts/comfortaa-v29-latin-ext_latin-regular.woff2") format("woff2"),
-    url("../fonts/comfortaa-v29-latin-ext_latin-regular.woff") format("woff"),
-    url("../fonts/comfortaa-v29-latin-ext_latin-regular.ttf") format("truetype"),
-    url("../fonts/comfortaa-v29-latin-ext_latin-regular.svg#Comfortaa")
+    url("../fonts/fira-mono-v8-latin-ext_latin-regular.woff2") format("woff2"),
+    url("../fonts/fira-mono-v8-latin-ext_latin-regular.woff") format("woff"),
+    url("../fonts/fira-mono-v8-latin-ext_latin-regular.ttf") format("truetype"),
+    url("../fonts/fira-mono-v8-latin-ext_latin-regular.svg#FiraMono")
       format("svg");
 }
 
 body {
-  font-family: "Comfortaa", Arial, Helvetica, sans-serif;
+  font-family: "Fira Mono", Arial, Helvetica, sans-serif;
 }

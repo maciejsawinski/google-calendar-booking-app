@@ -3,17 +3,24 @@ import React from "react";
 import Calendar from "./components/Calendar";
 import Footer from "./components/Footer";
 
+import Jumbotron from "react-bootstrap/Jumbotron";
+import Container from "react-bootstrap/Container";
+
 import "./App.scss";
 
 function App() {
   return (
     <>
-      <div className="container">
-        <h1 className="mt-5 text-dark font-weight-bold text-center">
-          Zarezerwuj wizytę
-        </h1>
+      <Jumbotron fluid>
+        <Container>
+          <h1 className="text-white font-weight-bold text-center">
+            Zarezerwuj wizytę
+          </h1>
+        </Container>
+      </Jumbotron>
+      <Container>
         <Calendar />
-      </div>
+      </Container>
       <Footer />
     </>
   );

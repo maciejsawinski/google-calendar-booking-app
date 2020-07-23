@@ -94,10 +94,12 @@ const Calendar = () => {
       return table;
     });
 
+    const daysPerSlide = window.innerWidth > 768 ? 5 : 2;
+
     setTables(
-      new Array(Math.ceil(tables.length / 5))
+      new Array(Math.ceil(tables.length / daysPerSlide))
         .fill()
-        .map((_) => tables.splice(0, 5))
+        .map((_) => tables.splice(0, daysPerSlide))
     );
   };
 
@@ -122,15 +124,11 @@ const Calendar = () => {
 
   const carouselContent = (
     <Carousel {...carouselConfig}>
-      <Carousel.Item>
-        <div className="column-group">{tables[0]}</div>
-      </Carousel.Item>
-      <Carousel.Item>
-        <div className="column-group">{tables[1]}</div>
-      </Carousel.Item>
-      <Carousel.Item>
-        <div className="column-group">{tables[2]}</div>
-      </Carousel.Item>
+      {tables.map((item, index) => (
+        <Carousel.Item key={index}>
+          <div className="column-group">{item}</div>
+        </Carousel.Item>
+      ))}
     </Carousel>
   );
 

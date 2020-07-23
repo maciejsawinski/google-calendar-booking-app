@@ -37,3 +37,13 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .carousel {
+    .column-group {
+      .column {
+        margin: 0 0.75rem;
+      }
+    }
+  }
+}
