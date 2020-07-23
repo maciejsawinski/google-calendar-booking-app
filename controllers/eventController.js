@@ -3,6 +3,8 @@
 
 import googleapis from "googleapis";
 import moment from "moment";
+import dotenv from "dotenv";
+import Mailgun from "mailgun-js";
 
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import AppErrorHandler from "../utils/appErrorHandler.js";
@@ -10,6 +12,8 @@ import AppErrorHandler from "../utils/appErrorHandler.js";
 import googleApi from "../googleapi.json";
 
 const { google } = googleapis;
+
+dotenv.config({ path: "./.env" });
 
 const googleAuthorize = async () => {
   const jwtClient = new google.auth.JWT(
@@ -22,6 +26,27 @@ const googleAuthorize = async () => {
   await jwtClient.authorize();
 
   return jwtClient;
+};
+
+const sendConfirmationEmail = async (data) => {
+  const { firstName, lastName, email, message, date } = data;
+
+  const mailgun = new Mailgun({
+    apiKey: process.env.MAILGUN_API,
+    domain: process.env.MAILGUN_DOMAIN,
+  });
+  const emailData = {
+    from: process.env.MAILGUN_FROM,
+    to: email,
+    subject: "Potwierdzenie wizyty",
+    html: `<b>Zarejestrowano wizytę</b><br /><br /><b>Data:</b> ${moment(
+      date
+    ).format(
+      "HH:mm DD.MM.YYYY"
+    )}<br /><b>Imię i nazwisko:</b> ${firstName} ${lastName}<br /><b>Email:</b> ${email}<br /><b>Wiadomość:</b> ${message}<br /><br /><b><i>Ten email jest tylko przykładem działania aplikacji integrującej system rezerwacji z kalendarzem Google. Zapraszam na mój profil <a href='https://github.com/maciejsawinski'>github</a></i></b>`,
+  };
+
+  await mailgun.messages().send(emailData);
 };
 
 export const createEvent = asyncErrorHandler(async (req, res, next) => {
@@ -43,6 +68,8 @@ export const createEvent = asyncErrorHandler(async (req, res, next) => {
       calendarId: googleApi.calendarId,
       resource: event,
     });
+
+    await sendConfirmationEmail(req.body);
 
     res.sendStatus(201);
   } catch (err) {

@@ -8,7 +8,7 @@ import Carousel from "react-bootstrap/Carousel";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-import useMountEffect from "./hooks/useMountEffect";
+import useMountEffect from "../hooks/useMountEffect";
 
 import ModalForm from "./ModalForm";
 
@@ -56,7 +56,7 @@ const Calendar = () => {
 
           const buttonConfig = {
             key: time,
-            variant: isBooked ? "outline-primary" : "primary",
+            variant: isBooked ? "outline-warning" : "warning",
             onClick: isBooked ? undefined : () => openModal(time),
             disabled: isBooked,
           };
@@ -79,11 +79,7 @@ const Calendar = () => {
           vertical
           className="column"
         >
-          <Button
-            className="column-title-button"
-            variant="outline-primary"
-            disabled
-          >
+          <Button className="column-title-button" variant="warning" disabled>
             <p className="column-title-text">
               {moment(event[0].time).format("ddd")},
             </p>
@@ -142,7 +138,7 @@ const Calendar = () => {
     <>
       <div className="carousel">
         {loading ? (
-          <Spinner animation="grow" variant="primary" />
+          <Spinner animation="grow" variant="warning" />
         ) : (
           carouselContent
         )}

@@ -6,18 +6,22 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 import { CheckCircleIcon } from "@primer/octicons-react";
 
 const ModalForm = ({ show, date, onHide, fetchData }) => {
-  const [formInputs, setFormInputs] = useState({
+  const defaultFormInputs = {
     firstName: "",
     lastName: "",
     email: "",
     message: "",
-  });
+  };
+
+  const [formInputs, setFormInputs] = useState(defaultFormInputs);
   const [formValidated, setFormValidated] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,14 +31,17 @@ const ModalForm = ({ show, date, onHide, fetchData }) => {
     const form = e.currentTarget;
     if (form.checkValidity()) {
       try {
+        setLoading(true);
         await axios.post("http://localhost:8080/api/v1/events", {
           ...formInputs,
           date: date.format(),
         });
+        setLoading(false);
         setShowAlert(false);
         setFormSubmitted(true);
         fetchData();
       } catch (err) {
+        setLoading(false);
         setShowAlert(true);
       }
     }
@@ -44,9 +51,19 @@ const ModalForm = ({ show, date, onHide, fetchData }) => {
     setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
   };
 
+  const handleClose = () => {
+    if (formSubmitted) {
+      setFormInputs(defaultFormInputs);
+      setFormValidated(false);
+      setFormSubmitted(false);
+    }
+
+    onHide();
+  };
+
   const modalConfig = {
     show: show,
-    onHide: onHide,
+    onHide: handleClose,
     size: "lg",
     centered: true,
   };
@@ -62,10 +79,11 @@ const ModalForm = ({ show, date, onHide, fetchData }) => {
           </Modal.Header>
           <div className="modal-success">
             <CheckCircleIcon
-              className="text-primary"
+              className="text-warning"
               size={160}
               verticalAlign="middle"
             />
+            <br />
             <h3>
               Zarezerwowano wizytę. Potwierdzenie wysłano na adres
               <br />
@@ -140,9 +158,15 @@ const ModalForm = ({ show, date, onHide, fetchData }) => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" type="submit">
-              Wyślij
-            </Button>
+            {loading ? (
+              <Button variant="warning" type="submit" disabled>
+                <Spinner as="span" animation="border" size="sm" /> Wysyłanie...
+              </Button>
+            ) : (
+              <Button variant="warning" type="submit">
+                Wyślij
+              </Button>
+            )}
           </Modal.Footer>
         </Form>
       </Modal>

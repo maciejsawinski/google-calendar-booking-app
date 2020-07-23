@@ -1,6 +1,9 @@
+@import "sass/variables";
+
 @import "~bootstrap/scss/bootstrap";
 
-@import "./sass/main.scss";
+@import "sass/fonts";
+
 @import "./sass/calendar.scss";
 @import "./sass/modal.scss";
 @import "./sass/footer.scss";

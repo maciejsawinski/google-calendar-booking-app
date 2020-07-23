@@ -1,6 +1,6 @@
 {
   "name": "booking",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node server.js",
@@ -19,6 +19,7 @@
     "googleapis": "^54.0.0",
     "helmet": "^3.23.3",
     "hpp": "^0.2.3",
+    "mailgun-js": "^0.22.0",
     "moment": "^2.27.0",
     "morgan": "~1.9.1",
     "xss-clean": "^0.1.1"
