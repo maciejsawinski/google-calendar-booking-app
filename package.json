@@ -22,6 +22,7 @@
     "hpp": "^0.2.3",
     "mailgun-js": "^0.22.0",
     "moment": "^2.27.0",
+    "moment-timezone": "^0.5.31",
     "morgan": "~1.9.1",
     "xss-clean": "^0.1.1"
   },

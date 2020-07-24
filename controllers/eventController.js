@@ -1,5 +1,5 @@
 import googleapis from "googleapis";
-import moment from "moment";
+import moment from "moment-timezone";
 import dotenv from "dotenv";
 import Mailgun from "mailgun-js";
 
@@ -9,6 +9,8 @@ import AppErrorHandler from "../utils/appErrorHandler.js";
 const { google } = googleapis;
 
 dotenv.config({ path: "./.env" });
+
+moment.tz.setDefault("Europe/Warsaw");
 
 const googleAuthorize = async () => {
   const jwtClient = new google.auth.JWT(
@@ -76,6 +78,7 @@ export const getEvents = asyncErrorHandler(async (req, res, next) => {
   try {
     const jwtClient = await googleAuthorize();
     const calendar = google.calendar("v3");
+
     const response = await calendar.events.list({
       auth: jwtClient,
       calendarId: process.env.GOOGLE_CALENDAR_ID,
