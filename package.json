@@ -1,7 +1,9 @@
 {
-  "name": "booking",
+  "name": "google-calendar-booking-app",
   "version": "1.0.0",
-  "private": true,
+  "repository": "https://github.com/maciejsawinski/google-calendar-booking-app.git",
+  "author": "maciejsawinski <macsawinski@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "start": "node server.js",
     "client": "cd client && yarn start",
