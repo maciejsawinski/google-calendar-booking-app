@@ -1,7 +1,7 @@
 import googleapis from "googleapis";
 import moment from "moment-timezone";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import Mailgun from "mailgun-js";
 
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import AppErrorHandler from "../utils/appErrorHandler.js";
@@ -28,10 +28,14 @@ const googleAuthorize = async () => {
 const sendConfirmationEmail = async (data) => {
   const { firstName, lastName, email, message, date } = data;
 
-  const mailgun = new Mailgun({
-    apiKey: process.env.MAILGUN_API,
-    domain: process.env.MAILGUN_DOMAIN,
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GOOGLE_EMAIL_FROM,
+      pass: process.env.GOOGLE_EMAIL_PASSWORD,
+    },
   });
+
   const emailData = {
     from: process.env.MAILGUN_FROM,
     to: email,
@@ -40,10 +44,10 @@ const sendConfirmationEmail = async (data) => {
       date
     ).format(
       "HH:mm DD.MM.YYYY"
-    )}<br /><b>Imię i nazwisko:</b> ${firstName} ${lastName}<br /><b>Email:</b> ${email}<br /><b>Wiadomość:</b> ${message}<br /><br /><b><i>Ten email jest tylko przykładem działania aplikacji integrującej system rezerwacji z kalendarzem Google. Zapraszam na mój profil <a href='https://github.com/maciejsawinski'>github</a></i></b>`,
+    )}<br /><b>Imię i nazwisko:</b> ${firstName} ${lastName}<br /><b>Email:</b> ${email}<br /><b>Wiadomość:</b> ${message}<br /><br /><b><i>Ten email jest tylko przykładem działania aplikacji integrującej system rezerwacji z kalendarzem Google. Zapraszam na mój profil na <a href='https://github.com/maciejsawinski'>Githubie</a></i></b>.`,
   };
 
-  await mailgun.messages().send(emailData);
+  await transporter.sendMail(emailData);
 };
 
 export const createEvent = asyncErrorHandler(async (req, res, next) => {
