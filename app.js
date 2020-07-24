@@ -6,6 +6,7 @@ import xss from "xss-clean";
 import hpp from "hpp";
 import compression from "compression";
 import cors from "cors";
+import path from "path";
 
 import AppErrorHandler from "./utils/appErrorHandler.js";
 import globalErrorHandler from "./controllers/errorController.js";
@@ -14,7 +15,7 @@ import eventRouter from "./routes/eventRoutes.js";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors());
 
 app.use(compression());
 
@@ -52,6 +53,17 @@ app.use((req, res, next) => {
 
 // routes
 app.use("/api/v1/events", eventRouter);
+
+// serving react
+if (process.env.NODE_ENV === "production") {
+  const __dirname = path.resolve();
+
+  app.use(express.static(path.join(__dirname, "client/build")));
+
+  app.get("*", function (req, res) {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
 
 // error handlers
 app.all("*", (req, res, next) => {

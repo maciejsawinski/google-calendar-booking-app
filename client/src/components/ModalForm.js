@@ -32,7 +32,7 @@ const ModalForm = ({ show, date, onHide, fetchData }) => {
     if (form.checkValidity()) {
       try {
         setLoading(true);
-        await axios.post("http://localhost:8080/api/v1/events", {
+        await axios.post("/api/v1/events", {
           ...formInputs,
           date: date.format(),
         });

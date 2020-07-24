@@ -1,6 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable node/no-unpublished-import */
-
 import googleapis from "googleapis";
 import moment from "moment";
 import dotenv from "dotenv";
@@ -9,17 +6,15 @@ import Mailgun from "mailgun-js";
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import AppErrorHandler from "../utils/appErrorHandler.js";
 
-import googleApi from "../googleapi.json";
-
 const { google } = googleapis;
 
 dotenv.config({ path: "./.env" });
 
 const googleAuthorize = async () => {
   const jwtClient = new google.auth.JWT(
-    googleApi.client_email,
+    process.env.GOOGLE_CLIENT_EMAIL,
     null,
-    googleApi.private_key,
+    process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
     ["https://www.googleapis.com/auth/calendar"]
   );
 
@@ -65,7 +60,7 @@ export const createEvent = asyncErrorHandler(async (req, res, next) => {
 
     await calendar.events.insert({
       auth: jwtClient,
-      calendarId: googleApi.calendarId,
+      calendarId: process.env.GOOGLE_CALENDAR_ID,
       resource: event,
     });
 
@@ -83,7 +78,7 @@ export const getEvents = asyncErrorHandler(async (req, res, next) => {
     const calendar = google.calendar("v3");
     const response = await calendar.events.list({
       auth: jwtClient,
-      calendarId: googleApi.calendarId,
+      calendarId: process.env.GOOGLE_CALENDAR_ID,
       timeMin: moment().utc().startOf("day").toISOString(),
       timeMax: moment().utc().startOf("day").add(16, "days").toISOString(),
     });

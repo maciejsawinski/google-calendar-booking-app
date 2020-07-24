@@ -35,7 +35,7 @@ const Calendar = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const res = await axios.get("http://localhost:8080/api/v1/events");
+    const res = await axios.get("/api/v1/events");
     createTables(res.data.data);
     setLoading(false);
   };
