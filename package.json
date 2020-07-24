@@ -7,7 +7,7 @@
     "client": "cd client && yarn start",
     "server": "nodemon --experimental-json-modules server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "heroku-postbuild": "cd client && yarn && yarn add && yarn run build"
+    "heroku-postbuild": "cd client && yarn && yarn build"
   },
   "dependencies": {
     "compression": "^1.7.4",
