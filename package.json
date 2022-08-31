@@ -22,7 +22,7 @@
     "googleapis": "^54.0.0",
     "helmet": "^3.23.3",
     "hpp": "^0.2.3",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "morgan": "~1.9.1",
     "nodemailer": "^6.4.10",
     "xss-clean": "^0.1.1"
